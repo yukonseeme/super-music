@@ -8,6 +8,8 @@ const progress = document.querySelector(".progress")
 const progressContainer = document.querySelector(".progress-container")
 const songTitle = document.querySelector("#title")
 const songImage = document.querySelector("#cover")
+const volumeContainer = document.querySelector(".volume-container")
+const volumeSlider = document.querySelector("#volumeSlider")
 
 // song titles
 const songs = ['I wonder', "Ava"]
@@ -77,6 +79,23 @@ function setProgress(e){
     audio.currentTime = (clickX / width * duration)
 }
 
+function getCurrentVolume(){
+    const currentVolume = audio.volume * 100
+    volumeSlider.style.width = `${currentVolume}%`;
+}
+function volumeControl(e){
+    const width = volumeContainer.clientWidth;    
+    
+    const rect = volumeContainer.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    let volumeLevel = clickX / width;
+
+    if (volumeLevel < 0) volumeLevel = 0;
+    if (volumeLevel > 1) volumeLevel = 1;
+
+    audio.volume = volumeLevel;
+    volumeSlider.style.width = `${volumeLevel * 100}%`;
+}
 
 // event listener
 
@@ -97,3 +116,6 @@ audio.addEventListener('timeupdate', updateProgress)
 progressContainer.addEventListener("click", setProgress)
 
 audio.addEventListener('ended', nextSong)
+
+volumeContainer.addEventListener('click', volumeControl)
+getCurrentVolume();
