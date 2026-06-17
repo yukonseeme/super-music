@@ -13,6 +13,8 @@ const volumeContainer = document.querySelector(".volume-container")
 const volumeSlider = document.querySelector("#volumeSlider")
 const stationGrid = document.querySelector(".station-grid");
 
+const navRadioLink = document.querySelector("#nav-radio");
+const navHomeLink = document.querySelector("#nav-home");
 
 let isDraggingVolume = false;
 let preMuteVolume = 1.0;
@@ -23,13 +25,7 @@ let preMuteVolume = 1.0;
 let stations = []
 let stationIndex = 0;
 
-const navRadioLink = document.querySelector("#nav-radio");
-if (navRadioLink) {
-    navRadioLink.addEventListener("click", (e) => {
-        e.preventDefault(); 
-        scrollToStations();
-    });
-}
+
 
 // keep track
 //let songIndex = 1
@@ -274,5 +270,40 @@ window.addEventListener('mouseup', () => {
 });
 
 volumeContainer.addEventListener('click', volumeControl)
+
+if (navRadioLink) {
+    navRadioLink.addEventListener("click", (e) => {
+        e.preventDefault(); 
+        
+        document.querySelectorAll(".nav-links a").forEach(link => {
+            link.classList.remove("active");
+        });
+        
+        navRadioLink.classList.add("active");
+        
+        scrollToStations();
+    });
+}
+
+if (navHomeLink) {
+    navHomeLink.addEventListener("click", (e) => {
+        e.preventDefault(); 
+        
+        document.querySelectorAll(".nav-links a").forEach(link => {
+            link.classList.remove("active");
+        });
+        
+        navHomeLink.classList.add("active");
+        
+        const mainContent = document.querySelector(".main-content");
+        if (mainContent) {
+            mainContent.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    });
+}
+
 getCurrentVolume();
 fetchStations();
