@@ -4,18 +4,6 @@
     {
       "src": "script/server.js",
       "use": "@vercel/node"
-    },
-    {
-      "src": "style/style.css",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "script/script.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -24,16 +12,7 @@
       "dest": "script/server.js"
     },
     {
-      "src": "/style/(.*)",
-      "dest": "/style/$1"
-    },
-    {
-      "src": "/script/script.js",
-      "dest": "/script/script.js"
-    },
-    {
-      "src": "/assets/(.*)",
-      "dest": "/assets/$1"
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
