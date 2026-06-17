@@ -8,7 +8,7 @@ const app = express();
 app.use(cors());
 
 // robust path construction to avoid string escape bugs
-const dbPath = "C:\\GoldenChest\\music-player\\super-music\\audio\\radioDb\\stations.db"
+const dbPath = path.join(__dirname, '..', 'audio', 'radioDb', 'stations.db');
 
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('Database connection error:', err.message);
