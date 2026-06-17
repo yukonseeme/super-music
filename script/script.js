@@ -18,20 +18,9 @@ const navHomeLink = document.querySelector("#nav-home");
 
 let isDraggingVolume = false;
 let preMuteVolume = 1.0;
-// song titles
-
-//const songs = ['I wonder', "Ava"]
 
 let stations = []
 let stationIndex = 0;
-
-
-
-// keep track
-//let songIndex = 1
-
-// load songs
-//loadSong(songs[songIndex])
 
 // fetch playlist from database
 async function fetchStations(){
@@ -42,19 +31,23 @@ async function fetchStations(){
         renderStationCards();
 
         if (stations.length > 0){
-            loadStation(stations[stationIndex]);
+            loadStation(stations[stationIndex], false);
         }
     } catch (error) {
         console.log('Failed to communicate with SQLite backend: ', error);
     }
 }
 
-
-function loadStation(station) {
+function loadStation(station, shouldPlay = true) {
     songTitle.innerHTML = station.name;
+    audio.src = station.url; 
+
     const coverImage = station.img_link ? station.img_link : 'album_1.jpg';
-    songImage.src = `/assets/${coverImage}`;
-    audio.src = `/api/stream/${station.id}`;
+    songImage.src = `./assets/${coverImage}`;
+
+    if (shouldPlay) {
+        playSong();
+    }
 }
 
 function scrollToStations() {
@@ -63,13 +56,6 @@ function scrollToStations() {
         targetSection.scrollIntoView({ behavior: "smooth" });
     }
 }
-// update song details
-/*function loadSong(song){
-    songTitle.innerHTML = song
-    audio.src = `audio/${song}.mp3`
-    songImage.src = `assets/${song}.jpg`
-
-} */
 
 function renderStationCards() {
     stationGrid.innerHTML = '';
@@ -82,7 +68,7 @@ function renderStationCards() {
 
         card.innerHTML = `
             <div class="card-img-container">
-                <img src="/assets/${coverImage}" class="card-cover">
+                <img src="./assets/${coverImage}" class="card-cover">
                 <div class="card-hover-overlay">
                     <button class="hover-play-btn">
                         <i class="fas fa-play"></i>
@@ -95,16 +81,7 @@ function renderStationCards() {
 
         card.addEventListener('click', () => {
             stationIndex = index;
-            
-            audio.onceCanPlay = () => {
-                playSong();
-                audio.removeEventListener('canplay', audio.onceCanPlay);
-            };
-            
-            audio.removeEventListener('canplay', audio.onceCanPlay);
-            audio.addEventListener('canplay', audio.onceCanPlay);
-
-            loadStation(station); 
+            loadStation(station, true); 
         });
 
         stationGrid.appendChild(card);
@@ -116,32 +93,23 @@ function playSong() {
     playBtn.querySelector('i.fas').classList.remove('fa-play')
     playBtn.querySelector('i.fas').classList.add('fa-pause')
 
-    audio.play()
+    audio.play().catch(err => console.log("Playback interaction error:", err));
 }
 
 function pauseSong() {
     musicContainer.classList.remove('play')
     playBtn.querySelector('i.fas').classList.add('fa-play')
-    playBtn.querySelector('i.fas').classList.remove('fa-pause')
+    playBtn.querySelector('i.fas').remove('fa-pause')
 
     audio.pause()
 }
 
 function prevSong(){
     stationIndex--;
-    //songIndex--
-
-    /* if(songIndex < 0){
-        songIndex = songs.length - 1
-    } */
-
     if (stationIndex < 0) {
         stationIndex = stations.length - 1;
     }
-
-    loadStation(stations[stationIndex]);
-    //loadSong(songs[songIndex])
-    playSong()
+    loadStation(stations[stationIndex], true);
 }
 
 function nextSong(){
@@ -149,9 +117,7 @@ function nextSong(){
     if(stationIndex > stations.length - 1){
         stationIndex = 0;
     }
-
-    loadStation(stations[stationIndex]);
-    playSong()
+    loadStation(stations[stationIndex], true);
 }
 
 function updateProgress(e) {
@@ -205,7 +171,6 @@ function updateVolumeIcon() {
     const icon = muteBtn.querySelector('i');
     if (!icon) return;
 
-    // Reset standard classes
     icon.className = 'fas';
 
     if (audio.muted || audio.volume === 0) {
@@ -230,8 +195,7 @@ function toggleMute() {
     updateVolumeIcon();
 }
 
-// event listener
-
+// Event Listeners
 playBtn.addEventListener('click', () => {
     const isPlaying = musicContainer.classList.contains('play')
     if(isPlaying){
@@ -239,17 +203,14 @@ playBtn.addEventListener('click', () => {
     } else {
         playSong()
     } 
-} )
+})
 
 prevBtn.addEventListener('click', prevSong)
 nextBtn.addEventListener('click', nextSong)
 
 audio.addEventListener('timeupdate', updateProgress)
-
 progressContainer.addEventListener("click", setProgress)
-
 muteBtn.addEventListener('click', toggleMute);
-
 audio.addEventListener('ended', nextSong)
 
 volumeContainer.addEventListener('mousedown', (e) => {
@@ -272,13 +233,10 @@ volumeContainer.addEventListener('click', volumeControl)
 if (navRadioLink) {
     navRadioLink.addEventListener("click", (e) => {
         e.preventDefault(); 
-        
         document.querySelectorAll(".nav-links a").forEach(link => {
             link.classList.remove("active");
         });
-        
         navRadioLink.classList.add("active");
-        
         scrollToStations();
     });
 }
@@ -286,11 +244,9 @@ if (navRadioLink) {
 if (navHomeLink) {
     navHomeLink.addEventListener("click", (e) => {
         e.preventDefault(); 
-        
         document.querySelectorAll(".nav-links a").forEach(link => {
             link.classList.remove("active");
         });
-        
         navHomeLink.classList.add("active");
         
         const mainContent = document.querySelector(".main-content");
