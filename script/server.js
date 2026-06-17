@@ -8,6 +8,8 @@ const path = require('path');
 const app = express();
 app.use(cors());
 
+app.use(express.static(path.join(__dirname, '..')));
+
 const dbPath = path.join(__dirname, '..', 'audio', 'radioDb', 'stations.db');
 
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -54,6 +56,12 @@ app.get('/api/stream/:id', (req, res) => {
             proxyReq.destroy();
         });
     });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Radio server active on port ${PORT}`);
 });
 
 module.exports = app;
