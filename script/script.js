@@ -40,10 +40,16 @@ async function fetchStations(){
 
 function loadStation(station, shouldPlay = true) {
     songTitle.innerHTML = station.name;
+    
+    audio.pause();
+    
+    audio.removeAttribute('src');
+    audio.load(); 
+    
     audio.src = station.url; 
 
     const coverImage = station.img_link ? station.img_link : 'album_1.jpg';
-    card.innerHTML = `<img src="./assets/${coverImage}" class="card-cover">`;
+    songImage.src = `./assets/${coverImage}`;
 
     if (shouldPlay) {
         playSong();
