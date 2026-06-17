@@ -18,7 +18,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 
 app.get('/api/stations', (req, res) => {
-    db.all("SELECT id, name, img_link FROM stations", [], (err, rows) => {
+    db.all("SELECT id, name, url, img_link FROM stations", [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }

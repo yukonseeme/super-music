@@ -43,7 +43,7 @@ function loadStation(station, shouldPlay = true) {
     audio.src = station.url; 
 
     const coverImage = station.img_link ? station.img_link : 'album_1.jpg';
-    songImage.src = `./assets/${coverImage}`;
+    card.innerHTML = `<img src="./assets/${coverImage}" class="card-cover">`;
 
     if (shouldPlay) {
         playSong();
