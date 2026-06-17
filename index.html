@@ -16,7 +16,7 @@
             <nav class="nav-links">
                 <p class="section-title">EXPLORE</p>
                 <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
-                <a href="#"><i class="fas fa-radio"></i> Radio Stations</a>
+                <a href="#" id="nav-radio"><i class="fas fa-radio"></i> Radio Stations</a>
                 <a href="#"><i class="fas fa-broadcast-tower"></i> Live Sessions</a>
                 
                 <p class="section-title">LIBRARY</p>
@@ -26,11 +26,19 @@
         </aside>
 
         <main class="main-content">
-            <!-- <header class="top-header"> 
-                <input type="text" placeholder="Search stations, genres, moods..." class="search-bar">
-            </header>  -->
-    
-            <div class="station-grid"></div>
+            <header class="parallax-hero">
+                <div class="parallax-bg"></div>
+                <div class="hero-content">
+                    <h1>Vibe with me</h1>
+                    <p>I just built a web streaming music platform with various radio links.</p>
+                    <button class="explore-btn" onclick="scrollToStations()">Explore Stations</button>
+                </div>
+            </header>
+
+            <section id="radio-section" class="radio-dashboard">
+                <h2 class="section-heading">Live Radio Stations</h2>
+                <div class="station-grid"></div>
+            </section>
         </main>
 
         <div class="music-container">

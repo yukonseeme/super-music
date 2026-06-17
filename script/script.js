@@ -13,6 +13,7 @@ const volumeContainer = document.querySelector(".volume-container")
 const volumeSlider = document.querySelector("#volumeSlider")
 const stationGrid = document.querySelector(".station-grid");
 
+
 let isDraggingVolume = false;
 let preMuteVolume = 1.0;
 // song titles
@@ -21,6 +22,14 @@ let preMuteVolume = 1.0;
 
 let stations = []
 let stationIndex = 0;
+
+const navRadioLink = document.querySelector("#nav-radio");
+if (navRadioLink) {
+    navRadioLink.addEventListener("click", (e) => {
+        e.preventDefault(); 
+        scrollToStations();
+    });
+}
 
 // keep track
 //let songIndex = 1
@@ -54,6 +63,12 @@ function loadStation(station) {
     songImage.src = `/super-music/assets/${coverImage}`;
 }
 
+function scrollToStations() {
+    const targetSection = document.querySelector("#radio-section");
+    if (targetSection) {
+        targetSection.scrollIntoView({ behavior: "smooth" });
+    }
+}
 // update song details
 /*function loadSong(song){
     songTitle.innerHTML = song

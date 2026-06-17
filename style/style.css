@@ -72,9 +72,88 @@ body {
 .main-content {
     grid-column: 2; 
     grid-row: 1;
-    padding: 32px 40px;
-    
+    padding: 0; /* Changed from 32px to 0 so the hero spans edge-to-edge */
     overflow-y: auto; 
+    overflow-x: hidden;
+    scroll-behavior: smooth; /* Forces ultra-smooth transitions when scrolling */
+}
+
+/* The Parallax Viewport Box */
+.parallax-hero {
+    position: relative;
+    height: 65vh; /* Spans 65% of the visible screen height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* The Background Layer moving at a slower perspective rate */
+.parallax-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%; /* Taller than container to allow room for downward layout movement */
+    background: linear-gradient(to bottom, rgba(9, 9, 13, 0.3), #09090d), 
+                url('../assets/bg.jpg') center/cover no-repeat; /* Uses an existing asset or any dark synth wallpaper */
+    background-attachment: fixed; /* Pure CSS parallax engine anchor */
+    z-index: 1;
+}
+
+/* Hero Typography Content Overlay */
+.hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero-content h1 {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    margin-bottom: 12px;
+    background: linear-gradient(45deg, #ffffff, var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+}
+
+.hero-content p {
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 24px;
+}
+
+.explore-btn {
+    background-color: var(--accent-purple);
+    color: #ffffff;
+    border: none;
+    padding: 12px 28px;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+.explore-btn:hover {
+    transform: scale(1.05);
+    background-color: #b975ff;
+}
+
+/* Adding back layout padding inside the content section dashboard wrapper */
+.radio-dashboard {
+    padding: 40px;
+    background-color: var(--bg-dark);
+}
+
+.section-heading {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text-main);
 }
 
 .app-container {
