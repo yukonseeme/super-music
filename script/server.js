@@ -1,13 +1,13 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
-const { spawn } = require('child_process');
-const cors = require('cors'); 
+const https = require('https');
+const http = require('http');
+const cors = require('cors');
 const path = require('path');
 
 const app = express();
 app.use(cors());
 
-// robust path construction to avoid string escape bugs
 const dbPath = path.join(__dirname, '..', 'audio', 'radioDb', 'stations.db');
 
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -24,47 +24,36 @@ app.get('/api/stations', (req, res) => {
     });
 });
 
-// live audio via FFmpeg proxy
 app.get('/api/stream/:id', (req, res) => {
     const stationId = req.params.id;
 
     db.get("SELECT url FROM stations WHERE id = ?", [stationId], (err, row) => {
         if (err || !row) {
-            return res.status(404).send('Station not found');
+            return res.status(404).json({ error: 'Station not found' });
         }
 
-        // set live audio headers for browser player
+        const streamUrl = row.url;
+        const url = new URL(streamUrl);
+        const transport = url.protocol === 'https:' ? https : http;
+
         res.setHeader('Content-Type', 'audio/mpeg');
-        res.setHeader('Transfer-Encoding', 'chunked');
+        res.setHeader('Cache-Control', 'no-cache');
+        res.setHeader('Access-Control-Allow-Origin', '*');
 
-        // FFmpeg to capture the live stream and pipe it to standard output as an MP3
-        const ffmpeg = spawn('ffmpeg', [
-            '-nostdin',                // IMPROVEMENT: Prevents FFmpeg from freezing waiting for console inputs
-            '-i', row.url,             // live radio URL from DB
-            '-f', 'mp3',               // force container format to MP3
-            '-acodec', 'libmp3lame',   // Standard high-compatibility encoder
-            '-ab', '128k',             // Output bitrate (128kbps is perfect for radio streams)
-            '-ac', '2',                // Force stereo audio channels
-            'pipe:1'                   // Stream stdout right to the server response
-        ]);
-
-        // Pipe the live FFmpeg buffer directly to the browser response object
-        ffmpeg.stdout.pipe(res);
-
-        // stderr logs so the process buffer doesn't fill up and freeze
-        ffmpeg.stderr.on('data', (data) => {
-            // console.log(`FFmpeg Log: ${data}`);
+        const proxyReq = transport.get(streamUrl, (proxyRes) => {
+            res.setHeader('Content-Type', proxyRes.headers['content-type'] || 'audio/mpeg');
+            proxyRes.pipe(res);
         });
 
-        // Clean up the process if the user switches stations or closes the app
+        proxyReq.on('error', (err) => {
+            console.error('Proxy error:', err);
+            res.status(502).send('Stream unavailable');
+        });
+
         req.on('close', () => {
-            ffmpeg.kill('SIGKILL');
-        });
-        
-        ffmpeg.on('error', (err) => {
-            console.error('FFmpeg process error:', err);
+            proxyReq.destroy();
         });
     });
 });
 
-app.listen(3000, () => console.log('Radio server active on http://localhost:3000'));
+module.exports = app;

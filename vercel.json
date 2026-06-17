@@ -12,7 +12,16 @@
       "dest": "script/server.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/style/(.*)",
+      "dest": "/style/$1"
+    },
+    {
+      "src": "/script/(.*)",
+      "dest": "/script/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*)",

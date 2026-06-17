@@ -36,7 +36,7 @@ let stationIndex = 0;
 // fetch playlist from database
 async function fetchStations(){
     try{
-        const response = await fetch('http://localhost:3000/api/stations');
+        const response = await fetch('/api/stations');
         stations = await response.json();
 
         renderStationCards();
@@ -52,11 +52,9 @@ async function fetchStations(){
 
 function loadStation(station) {
     songTitle.innerHTML = station.name;
-    audio.src = `http://localhost:3000/api/stream/${station.id}`;
-    
     const coverImage = station.img_link ? station.img_link : 'album_1.jpg';
-    
-    songImage.src = `/super-music/assets/${coverImage}`;
+    songImage.src = `/assets/${coverImage}`;
+    audio.src = `/api/stream/${station.id}`;
 }
 
 function scrollToStations() {
@@ -84,7 +82,7 @@ function renderStationCards() {
 
         card.innerHTML = `
             <div class="card-img-container">
-                <img src="./assets/${coverImage}" class="card-cover">
+                <img src="/assets/${coverImage}" class="card-cover">
                 <div class="card-hover-overlay">
                     <button class="hover-play-btn">
                         <i class="fas fa-play"></i>
