@@ -115,7 +115,7 @@ body {
     letter-spacing: 6px;
     margin-bottom: 12px;
     background: linear-gradient(45deg, #ffffff, var(--accent-purple));
-
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
 }
