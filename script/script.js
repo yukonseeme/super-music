@@ -155,6 +155,8 @@ async function executeSearch() {
 
         resultsHeading.innerText = `Search Results\n${searchResultsPlaylist.length} tracks matching "${query}"`;
 
+        resultsListContainer.innerHTML = "";
+        
         searchResultsPlaylist.forEach((track, index) => {
             const row = document.createElement("div");
             row.classList.add("search-result-row"); 
