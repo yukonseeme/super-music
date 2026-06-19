@@ -15,7 +15,9 @@
             <div class="logo">SuperRadio</div>
             <nav class="nav-links">
                 <p class="section-title">EXPLORE</p>
-                <a href="javascript:void(0)" id="nav-home" class="active"><i class="fas fa-home"></i> Home</a>                <a href="javascript:void(0)" id="nav-radio"><i class="fas fa-radio"></i> Radio Stations</a><a href="#"><i class="fas fa-broadcast-tower"></i> Live Sessions</a>
+                <a href="javascript:void(0)" id="nav-home" class="active"><i class="fas fa-home"></i> Home</a>                
+                <a href="javascript:void(0)" id="nav-radio"><i class="fas fa-radio"></i> Radio Stations</a>
+                <a href="javascript:void(0)" id="nav-search"><i class="fas fa-search"></i> Search Music</a>
                 
                 <p class="section-title">LIBRARY</p>
                 <a href="#"><i class="fas fa-heart"></i> Favorites</a>
@@ -24,7 +26,7 @@
         </aside>
 
         <main class="main-content">
-            <header class="parallax-hero">
+            <header id ='main' class="parallax-hero">
                 <div class="parallax-bg"></div>
                 <div class="hero-content">
                     <h1>Vibe with me</h1>
@@ -34,9 +36,26 @@
             </header>
 
             <section id="radio-section" class="radio-dashboard">
-                <h2 class="section-heading">Live Radio Stations</h2>
+                <h2 class = 'search-main-heading'> Live Radio Stations </h2>
+                <p class ='search-subheading'>Listen to various radio.</p>
+                
                 <div class="station-grid"></div>
             </section>
+
+            <section id="search-music" class="search-dashboard-wrapper">
+                <h2 class = 'search-main-heading'> Search Music </h2>
+                <p class ='search-subheading'>Find songs, artists, or albums from the library.</p>
+                <div class="search-pill-box">
+                        <i class="fas fa-search search-inside-icon" id="search-btn"></i>
+                        <input type="text" id="search-input" placeholder="Try 'midnight', 'M83', 'jazz', 'joji' ..." />
+                    </div>
+
+                    <div id="search-results-section" class="search-results-list" style="display: none;">
+                        <h2 id="search-results-heading">Search Results</h2>
+                        <div id="results-list-container"></div>
+                    </div>
+            </section>
+            
         </main>
 
         <div class="music-container">
@@ -46,7 +65,7 @@
                 </div>
                 <div class="text-meta">
                     <h4 id="title">Song title</h4>
-                    <span>Live Radio Stream</span>
+                    <!--<span>Live Radio Stream</span>-->
                 </div>
             </div>
 
@@ -73,7 +92,7 @@
                             Live
                         </span>                
                     </div>
-            </div>
+                </div>
 
             <div class="volume-controls-group">
                 <button id="mute" class="action-btn">
@@ -86,7 +105,7 @@
             </div>
 
             <audio id="audio"></audio>
-            
+            <div id="yt-player" style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; pointer-events: none;"></div>
         </div>  
     </div>
 

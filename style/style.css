@@ -28,22 +28,26 @@
     gap: 12px; 
     color: var(--text-muted);
     text-decoration: none;
-    padding: 10px 12px;
-    border-radius: 8px;
+    padding: 12px 14px;
+    border-radius: 10px;
     font-size: 14px;
-    margin-bottom: 4px;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    margin-bottom: 6px;
+
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
 }
 
 .nav-links a:hover {
     color: var(--text-main);
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.03);
+    transform: translateX(4px);
 }
 
-/* Active Highlight Link (Home) */
-.nav-links a.active {
+.nav-links a.active i {
     color: var(--accent-purple);
-    background-color: rgba(168, 85, 247, 0.1);
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
 }
 
 .progress, .cover {
@@ -72,33 +76,41 @@ body {
 .main-content {
     grid-column: 2; 
     grid-row: 1;
-    padding: 0; /* Changed from 32px to 0 so the hero spans edge-to-edge */
+
+    height: 100vh; 
     overflow-y: auto; 
     overflow-x: hidden;
-    scroll-behavior: smooth; /* Forces ultra-smooth transitions when scrolling */
+    scroll-behavior: smooth; 
+    position: relative; 
+
+    padding-bottom: 120px;
 }
 
-/* The Parallax Viewport Box */
 .parallax-hero {
     position: relative;
-    height: 65vh; /* Spans 65% of the visible screen height */
+    height: 65vh; 
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    
+    margin-left: -240px; 
+    padding-left: 240px;
 }
 
-/* The Background Layer moving at a slower perspective rate */
 .parallax-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 120%; /* Taller than container to allow room for downward layout movement */
+    top: -10px;
+    left: -10px;
+    width: calc(100% + 20px);
+    height: calc(120% + 20px); 
     background: linear-gradient(to bottom, rgba(9, 9, 13, 0.3), #09090d), 
-                url('../assets/bg.jpg') center/cover no-repeat; /* Uses an existing asset or any dark synth wallpaper */
-    background-attachment: fixed; /* Pure CSS parallax engine anchor */
+                url('../assets/bg.jpg') center/cover no-repeat;
+    background-attachment: fixed; 
     z-index: 1;
+    
+    will-change: filter;
+    transition: filter 0.05s linear; 
 }
 
 /* Hero Typography Content Overlay */
@@ -158,49 +170,59 @@ body {
 
 .app-container {
     display: grid;
-    
     grid-template-columns: 240px 1fr; 
-    
-    grid-template-rows: 1fr 90px;    
-    
+    grid-template-rows: 1fr;    
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
 }
+
 .sidebar {
     grid-column: 1; 
     grid-row: 1;   
-    background-color: var(--sidebar-bg);
+    height: 100%;
+    background-color: rgba(17, 17, 22, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    
     padding: 32px 24px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid rgba(255, 255, 255, 0.05); 
+    
+
+    border-right: 1px solid rgba(255, 255, 255, 0.06); 
+    z-index: 15;
 }
 
 .music-container {
     grid-column: 1 / span 2; 
-    grid-row: 2;   
-
-    border-radius: 0;      
-    box-shadow: none;        
-    margin: 0;              
+  
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 82px;              
+    border-radius: 15px;
+    background-color: rgba(10, 10, 12, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px); 
     
-    background-color: var(--player-bg);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
- 
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 32px;
-    height: 100%;            
-    position: relative;
-    z-index: 10;
+    z-index: 1000; 
+    box-sizing: border-box;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .track-info-group {
     display: flex;
     align-items: center;
-    gap: 16px;
-    width: 30%;
+    gap: 14px;
+    width: 25%;
+    min-width: 220px;
 }
 
 .player-controls-group {
@@ -244,7 +266,8 @@ body {
 
 .img-container::after {
     content: "";
-    background-color: var(--player-bg); 
+
+    background-color: var(--bg-dark); 
     border: 2px solid rgba(255, 255, 255, 0.1); 
 
     height: 10px;
@@ -319,21 +342,26 @@ body {
 
 .progress-wrapper {
     display: flex;
-    align-items: center;
-    width: 100%;
+    align-items: center; 
+    justify-content: space-between; 
     gap: 12px;
+    width: 100%;
+    max-width: 600px; 
+    margin: 0 auto;
 }
+
 .time {
     font-size: 11px;
     color: var(--text-muted);
 }
 
 .progress-container {
-    background-color: rgba(255, 255, 255, 0.1); 
+    flex: 1; /* Tells the rail bar to stretch and swallow up all remaining space */
+    background: rgba(255, 255, 255, 0.1);
+    height: 4px;
     border-radius: 2px;
     cursor: pointer;
-    height: 4px;
-    width: 100%; 
+    position: relative;
 }
 
 .progress {
@@ -357,6 +385,10 @@ body {
 }
 
 .volume-container:hover .volume-slider {
+    background-color: var(--accent-purple);
+}
+
+.progress-container:hover .progress {
     background-color: var(--accent-purple);
 }
 
@@ -500,4 +532,162 @@ body {
         opacity: 0.4;
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
     }
+}
+
+
+/* Core Wrapper Spacing */
+.search-dashboard-wrapper {
+    margin: 40px 30px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Typography Hierarchy matching image_678f9a.png */
+.search-main-heading {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+}
+
+.search-subheading {
+    color: #7a7a7a;
+    font-size: 15px;
+    font-weight: 400;
+    margin-bottom: 28px;
+}
+
+/* Rounded Input Pill Capsule */
+.search-pill-box {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 750px;
+    background: #0d0d0f; /* Deep obsidian backdrop matching image */
+    border: 1px solid #1c1c1f; /* Ultra subtle outline frame */
+    border-radius: 50px; /* Yields smooth round pill ends */
+    padding: 0 20px;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Focus highlighting for a responsive feel */
+.search-pill-box:focus-within {
+    border-color: #2c2c30;
+    background: #121214;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.02);
+}
+
+/* Inline Icon Setup */
+.search-inside-icon {
+    color: #727276;
+    font-size: 16px;
+    margin-right: 14px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.search-inside-icon:hover {
+    color: #ffffff; /* Illuminates icon on cursor hover */
+}
+
+/* Raw Field Overrides */
+#search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    padding: 14px 0;
+    font-size: 15px;
+}
+
+/* Custom grey tracking color override for placeholder properties */
+#search-input::placeholder {
+    color: #49494c; 
+    font-weight: 400;
+}
+
+
+
+/* Main Sheet Backdrop */
+.search-results-list {
+    margin-top: 30px;
+    background: #0b0b0d; /* Slightly lighter obsidian grid field background */
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #141417;
+}
+
+/* FIXED: Unified CSS Grid Alignment definition mapping */
+.search-result-row {
+    display: grid;
+    grid-template-columns: 40px 3fr 2fr 80px; /* Perfect structural mapping: # | Track Title | Feed | Duration */
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.search-result-row:hover {
+    background: rgba(255, 255, 255, 0.05); /* Smooth row lighting highlight hover effect */
+}
+
+.row-index {
+    color: #b3b3b3;
+    font-size: 14px;
+}
+
+.row-cover-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    overflow: hidden;
+}
+
+.row-cover-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.row-text-details {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.row-track-name {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.row-track-artist {
+    color: #b3b3b3;
+    font-size: 13px;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.row-album-name {
+    color: #b3b3b3;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.row-duration {
+    color: #b3b3b3;
+    font-size: 14px;
+    text-align: right;
 }

@@ -5,6 +5,11 @@ const http = require('http');
 const cors = require('cors');
 const path = require('path');
 
+//yt dlp and yt search
+const yts = require('yt-search');
+const ytdl = require('@distube/ytdl-core');
+const ytext = require('youtube-ext');
+
 const app = express();
 app.use(cors());
 
@@ -56,6 +61,53 @@ app.get('/api/stream/:id', (req, res) => {
             proxyReq.destroy();
         });
     });
+});
+
+//
+app.get('/api/search-track', async (req, res) => {
+    const songQuery = req.query.search;
+    if (!songQuery) return res.status(400).json({ error: 'Search query is required' });
+
+    try {
+        const searchResults = await yts(songQuery);
+        const videos = searchResults.videos || [];
+
+        if (videos.length === 0) return res.json([]);
+
+        const trackList = videos.slice(0, 10).map((video, index) => ({
+            index: index + 1,
+            id: video.videoId, 
+            name: video.title,
+            artist: video.author?.name || 'Unknown Artist',
+            img_link: video.thumbnail || video.image || './assets/album_1.jpg',
+            duration: video.timestamp || '3:30'
+        }));
+
+        res.json(trackList);
+    } catch (err) {
+        console.error('YT-Search Engine Error:', err.message);
+        res.json([]); 
+    }
+});
+
+// extract direct audio stream URLs on demand
+app.get('/api/get-stream-url', async (req, res) => {
+    const videoId = req.query.id; 
+    if (!videoId) return res.status(400).json({ error: 'Video ID is required' });
+
+    try {
+        // Fetch format streams directly via alternative scraping paths
+        const streamInfo = await ytext.getStreamInfo(`https://www.youtube.com/watch?v=${videoId}`);
+        
+        if (!streamInfo || !streamInfo.url) {
+            return res.status(404).json({ error: 'Audio stream link unavailable' });
+        }
+        
+        res.json({ stream_url: streamInfo.url });
+    } catch (err) {
+        console.error('Extraction Error:', err.message);
+        res.status(500).json({ error: 'Failed to extract cloud stream link' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
