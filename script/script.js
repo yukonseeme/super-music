@@ -32,21 +32,61 @@ const parallaxBgImage = document.querySelector(".parallax-bg");
 
 let stations = [];
 let searchResultsPlaylist = [];
-let currentPlaylist = []; 
+let currentPlaylist = [];
 let stationIndex = 0;
 let isDraggingVolume = false;
 let currentMode = 'radio'; // State tracker: 'radio' or 'youtube'
 let preMuteVolume = 1.0;
 
-const nativeAudio = new Audio(); 
-let ytPlayer = null; 
+const nativeAudio = new Audio();
+let ytPlayer = null;
 
 const tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
 const firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-window.onYouTubeIframeAPIReady = function() {
+
+function initializeTopBarAuth() {
+    const authContainer = document.getElementById('auth-status-container');
+    const avatarCircle = document.getElementById('user-avatar-circle');
+
+    // Return early if the layout components aren't present on the page
+    if (!authContainer || !avatarCircle) return;
+
+    // Check if user session data exists in localStorage from the login page
+    const savedUser = localStorage.getItem('super_music');
+
+    if (savedUser) {
+        try {
+            const user = JSON.parse(savedUser);
+
+            // Swap the "Sign in" button out for a clean, non-intrusive first-name welcome
+            authContainer.innerHTML = `
+                <span class="user-welcome" style="color: #E2E8F0; font-weight: 500; font-size: 14px; margin-right: 4px;">
+                    Hi, ${user.name.split(' ')[0]}
+                </span>
+            `;
+
+            // If a secure Google profile image URL is present, paint it into the avatar ring
+            if (user.picture || user.img_link) {
+                const imgUrl = user.picture || user.img_link;
+                avatarCircle.style.backgroundImage = `url('${imgUrl}')`;
+                avatarCircle.style.backgroundSize = 'cover';
+                avatarCircle.style.backgroundPosition = 'center';
+                avatarCircle.style.opacity = '1';
+            }
+        } catch (e) {
+            console.error("Failed to parse active user state session data:", e);
+            avatarCircle.style.opacity = '0.5';
+        }
+    } else {
+        avatarCircle.style.opacity = '0.5';
+    }
+}
+
+
+window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player('yt-player', {
         height: '1px',
         width: '1px',
@@ -105,9 +145,9 @@ function scrollToHome() {
     const mainContent = document.querySelector(".main-content");
     const heroHeader = document.querySelector("#main");
     if (mainContent && heroHeader) {
-        mainContent.scrollTo({ 
-            top: heroHeader.offsetTop, 
-            behavior: "smooth" 
+        mainContent.scrollTo({
+            top: heroHeader.offsetTop,
+            behavior: "smooth"
         });
     }
 }
@@ -116,10 +156,10 @@ function scrollToStations() {
     const mainContent = document.querySelector(".main-content");
     const targetSection = document.querySelector("#radio-section");
     if (mainContent && targetSection) {
-        const targetOffset = targetSection.offsetTop - 20; 
-        mainContent.scrollTo({ 
-            top: targetOffset, 
-            behavior: "smooth" 
+        const targetOffset = targetSection.offsetTop - 20;
+        mainContent.scrollTo({
+            top: targetOffset,
+            behavior: "smooth"
         });
     }
 }
@@ -129,9 +169,9 @@ function scrollToSearchMusic() {
     const targetSection = document.querySelector("#search-music");
     if (mainContent && targetSection) {
         const targetOffset = targetSection.offsetTop - 20;
-        mainContent.scrollTo({ 
-            top: targetOffset, 
-            behavior: "smooth" 
+        mainContent.scrollTo({
+            top: targetOffset,
+            behavior: "smooth"
         });
     }
 }
@@ -156,11 +196,11 @@ async function executeSearch() {
         resultsHeading.innerText = `Search Results\n${searchResultsPlaylist.length} tracks matching "${query}"`;
 
         resultsListContainer.innerHTML = "";
-        
+
         searchResultsPlaylist.forEach((track, index) => {
             const row = document.createElement("div");
-            row.classList.add("search-result-row"); 
-            
+            row.classList.add("search-result-row");
+
             row.innerHTML = `
                 <div class="row-index">${track.index}</div>
                 <div class="row-cover-info">
@@ -209,13 +249,13 @@ function loadItem(item, shouldPlay = true) {
         if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
             ytPlayer.pauseVideo();
         }
-        
+
         nativeAudio.src = item.url;
         if (shouldPlay) playSong();
     } else {
         nativeAudio.pause();
         nativeAudio.removeAttribute('src');
-        
+
         if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
             ytPlayer.loadVideoById(item.id);
             if (!shouldPlay) ytPlayer.pauseVideo();
@@ -248,17 +288,17 @@ function pauseSong() {
     }
 }
 
-function prevSong(){
+function prevSong() {
     if (currentPlaylist.length === 0) return;
     stationIndex--;
     if (stationIndex < 0) stationIndex = currentPlaylist.length - 1;
-    
+
     const nextItem = currentPlaylist[stationIndex];
     currentMode = nextItem.isRadio ? 'radio' : 'youtube';
     loadItem(nextItem, true);
 }
 
-function nextSong(){
+function nextSong() {
     if (currentPlaylist.length === 0) return;
     stationIndex++;
     if (stationIndex > currentPlaylist.length - 1) stationIndex = 0;
@@ -286,7 +326,7 @@ function setProgress(e) {
 }
 
 function initVolume() {
-    const defaultVolume = 0.8; 
+    const defaultVolume = 0.8;
     nativeAudio.volume = defaultVolume;
     if (volumeSlider) {
         volumeSlider.style.width = `${defaultVolume * 100}%`;
@@ -294,8 +334,8 @@ function initVolume() {
     updateVolumeIcon(defaultVolume);
 }
 
-function volumeControl(e){
-    const width = volumeContainer.clientWidth;    
+function volumeControl(e) {
+    const width = volumeContainer.clientWidth;
     const rect = volumeContainer.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     let volumeLevel = clickX / width;
@@ -309,9 +349,9 @@ function volumeControl(e){
     }
 
     volumeSlider.style.width = `${volumeLevel * 100}%`;
-    
+
     updateVolumeIcon(volumeLevel);
-    
+
     if (volumeLevel > 0) {
         nativeAudio.muted = false;
         if (ytPlayer && typeof ytPlayer.unMute === 'function') ytPlayer.unMute();
@@ -326,9 +366,9 @@ function updateVolumeIcon(volumeLevel) {
     if (volumeLevel === 0) {
         icon.className = 'fas fa-volume-mute';
     } else if (volumeLevel < 0.5) {
-        icon.className = 'fas fa-volume-down'; 
+        icon.className = 'fas fa-volume-down';
     } else {
-        icon.className = 'fas fa-volume-up';   
+        icon.className = 'fas fa-volume-up';
     }
 }
 
@@ -346,17 +386,17 @@ function toggleMute() {
     if (isCurrentlyMuted) {
         nativeAudio.muted = false;
         if (ytPlayer && typeof ytPlayer.unMute === 'function') ytPlayer.unMute();
-        
+
         targetVolume = preMuteVolume > 0 ? preMuteVolume : 0.5;
-        
+
         nativeAudio.volume = targetVolume;
         if (ytPlayer && typeof ytPlayer.setVolume === 'function') ytPlayer.setVolume(targetVolume * 100);
     } else {
         preMuteVolume = nativeAudio.volume > 0 ? nativeAudio.volume : 0.5;
-        
+
         nativeAudio.muted = true;
         if (ytPlayer && typeof ytPlayer.mute === 'function') ytPlayer.mute();
-        
+
         targetVolume = 0;
     }
 
@@ -384,7 +424,7 @@ function renderStationCards() {
             currentPlaylist = stations;
             stationIndex = index;
             currentMode = 'radio';
-            loadItem(station, true); 
+            loadItem(station, true);
         });
         stationGrid.appendChild(card);
     });
@@ -401,12 +441,12 @@ function formatTime(seconds) {
 setInterval(() => {
     if (currentMode === 'radio') {
         if (currentTimeDisplay) currentTimeDisplay.innerText = "00:00";
-        if (progressBarFill) progressBarFill.style.width = '100%'; 
-        
+        if (progressBarFill) progressBarFill.style.width = '100%';
+
         if (totalDurationDisplay) {
             totalDurationDisplay.innerHTML = `<span class="live-dot"></span> Live`;
         }
-        
+
     } else if (currentMode === 'youtube' && ytPlayer && typeof ytPlayer.getCurrentTime === 'function') {
         const currentTime = ytPlayer.getCurrentTime() || 0;
         const totalDuration = ytPlayer.getDuration() || 0;
@@ -424,7 +464,7 @@ setInterval(() => {
 
 if (navRadioLink) {
     navRadioLink.addEventListener("click", (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         document.querySelectorAll(".nav-links a").forEach(link => link.classList.remove("active"));
         navRadioLink.classList.add("active");
         scrollToStations();
@@ -433,29 +473,43 @@ if (navRadioLink) {
 
 if (navHomeLink) {
     navHomeLink.addEventListener("click", (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         document.querySelectorAll(".nav-links a").forEach(link => link.classList.remove("active"));
         navHomeLink.classList.add("active");
-        scrollToHome(); 
+        scrollToHome();
     });
 }
 
 if (mainContentPanel && parallaxBgImage) {
     mainContentPanel.addEventListener("scroll", () => {
         const scrollTopPosition = mainContentPanel.scrollTop;
-        
-        const dynamicBlur = Math.min(scrollTopPosition / 25, 12); 
-        
+
+        const dynamicBlur = Math.min(scrollTopPosition / 25, 12);
+
         parallaxBgImage.style.filter = `blur(${dynamicBlur}px)`;
+
+        if (topBar) {
+            const opacityLevel = Math.max(1 - (scrollTopPosition / 80), 0);
+            const shiftY = Math.min(scrollTopPosition / 4, 15); // Subtle upwards float animation
+
+            topBar.style.opacity = opacityLevel;
+            topBar.style.transform = `translateY(-${shiftY}px)`;
+
+            if (opacityLevel === 0) {
+                topBar.style.pointerEvents = "none";
+            } else {
+                topBar.style.pointerEvents = "auto";
+            }
+        }
     });
 }
 
 if (navSearchLink) {
     navSearchLink.addEventListener("click", (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
         document.querySelectorAll(".nav-links a").forEach(link => link.classList.remove("active"));
         navSearchLink.classList.add("active");
-        
+
         scrollToSearchMusic();
     });
 }
@@ -481,3 +535,4 @@ volumeContainer.addEventListener('click', volumeControl);
 
 initVolume();
 fetchStations();
+initializeTopBarAuth();

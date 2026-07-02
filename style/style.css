@@ -707,7 +707,7 @@ body {
 }
 
 /* google /login auth */
-.app-login{
+.app-login {
     background-color: #0B0B0C;
     color: #FFFFFF;
     display: flex;
@@ -888,4 +888,27 @@ body {
     text-align: center;
     max-width: 320px;
     line-height: 1.6;
+}
+
+/* top bar*/
+.top-bar-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+
+    height: 70px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 32px;
+    z-index: 100;
+
+    background-color: rgba(9, 9, 13, 0.45);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }

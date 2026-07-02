@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Player</title>
 
     <link rel="stylesheet" href="./style/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+        integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
 
     <div class="app-container">
@@ -15,18 +19,29 @@
             <div class="logo">SuperRadio</div>
             <nav class="nav-links">
                 <p class="section-title">EXPLORE</p>
-                <a href="javascript:void(0)" id="nav-home" class="active"><i class="fas fa-home"></i> Home</a>                
+                <a href="javascript:void(0)" id="nav-home" class="active"><i class="fas fa-home"></i> Home</a>
                 <a href="javascript:void(0)" id="nav-radio"><i class="fas fa-radio"></i> Radio Stations</a>
                 <a href="javascript:void(0)" id="nav-search"><i class="fas fa-search"></i> Search Music</a>
-                
+
                 <p class="section-title">LIBRARY</p>
                 <a href="#"><i class="fas fa-heart"></i> Favorites</a>
-            <!-- <a href="#"><i class="fas fa-history"></i> Recent</a> -->
+                <!-- <a href="#"><i class="fas fa-history"></i> Recent</a> -->
             </nav>
         </aside>
 
         <main class="main-content">
-            <header id ='main' class="parallax-hero">
+            <div class="top-bar-actions">
+                <div id="auth-status-container">
+                    <a href="login.html" class="sign-in-btn"
+                        style="background-color: var(--accent-purple); color: white; padding: 8px 18px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 13px;">
+                        Sign in
+                    </a>
+                </div>
+                <div class="user-avatar" id="user-avatar-circle"
+                    style="width: 34px; height: 34px; background-color: #A78BFA; border-radius: 50%;"></div>
+            </div>
+
+            <header id='main' class="parallax-hero">
                 <div class="parallax-bg"></div>
                 <div class="hero-content">
                     <h1>Vibe with me</h1>
@@ -35,27 +50,27 @@
                 </div>
             </header>
 
+            <section id="search-music" class="search-dashboard-wrapper">
+                <h2 class='search-main-heading'> Search Music </h2>
+                <p class='search-subheading'>Find songs, artists, or albums from the library.</p>
+                <div class="search-pill-box">
+                    <i class="fas fa-search search-inside-icon" id="search-btn"></i>
+                    <input type="text" id="search-input" placeholder="Try 'midnight', 'M83', 'jazz', 'joji' ..." />
+                </div>
+
+                <div id="search-results-section" class="search-results-list" style="display: none;">
+                    <h2 id="search-results-heading">Search Results</h2>
+                    <div id="results-list-container"></div>
+                </div>
+            </section>
+
             <section id="radio-section" class="radio-dashboard">
-                <h2 class = 'search-main-heading'> Live Radio Stations </h2>
-                <p class ='search-subheading'>Listen to various radio.</p>
-                
+                <h2 class='search-main-heading'> Live Radio Stations </h2>
+                <p class='search-subheading'>Listen to various radio.</p>
+
                 <div class="station-grid"></div>
             </section>
 
-            <section id="search-music" class="search-dashboard-wrapper">
-                <h2 class = 'search-main-heading'> Search Music </h2>
-                <p class ='search-subheading'>Find songs, artists, or albums from the library.</p>
-                <div class="search-pill-box">
-                        <i class="fas fa-search search-inside-icon" id="search-btn"></i>
-                        <input type="text" id="search-input" placeholder="Try 'midnight', 'M83', 'jazz', 'joji' ..." />
-                    </div>
-
-                    <div id="search-results-section" class="search-results-list" style="display: none;">
-                        <h2 id="search-results-heading">Search Results</h2>
-                        <div id="results-list-container"></div>
-                    </div>
-            </section>
-            
         </main>
 
         <div class="music-container">
@@ -88,27 +103,30 @@
                         <div class="progress"></div>
                     </div>
                     <span class="time live-indicator">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>                
-                    </div>
+                        <span class="live-dot"></span>
+                        Live
+                    </span>
                 </div>
+            </div>
 
             <div class="volume-controls-group">
                 <button id="mute" class="action-btn">
                     <i class="fas fa-volume-up"></i>
                 </button>
-                
+
                 <div class="volume-container">
                     <div class="volume-slider" id="volumeSlider"></div>
                 </div>
             </div>
 
             <audio id="audio"></audio>
-            <div id="yt-player" style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; pointer-events: none;"></div>
-        </div>  
+            <div id="yt-player"
+                style="position: absolute; top: -9999px; left: -9999px; width: 1px; height: 1px; pointer-events: none;">
+            </div>
+        </div>
     </div>
 
     <script src="./script/script.js"></script>
 </body>
+
 </html>

@@ -17,9 +17,9 @@ document.getElementById('login-form').addEventListener("submit", async (e) => {
 
         const data = await response.json();
         if (!response.ok) throw new Error(data.error || 'Login Failed');
-        
+
         alert(`Welcome back, ${data.user.name}!`);
-        
+
     } catch (err) {
         alert(err.message);
     }
@@ -44,9 +44,9 @@ window.onload = function () {
             // This replaces attachClickHandler completely
             google.accounts.id.renderButton(
                 document.getElementById('google-btn-container'), // Target a container div element wrapper
-                { 
+                {
                     theme: 'dark',      // Matches Vantage's clean dark aesthetic mode perfectly!
-                    size: 'large', 
+                    size: 'large',
                     type: 'standard',
                     shape: 'rectangular',
                     text: 'continue_with',
@@ -68,11 +68,11 @@ async function handleGoogleCredentialResponse(response) {
         });
 
         const data = await backendRes.json();
-        
+
         if (!backendRes.ok) throw new Error(data.error || 'Google Authentication failed at database check.');
         alert(`Welcome back to Vantage, ${data.user.name}!`);
         console.log("Logged in profile data:", data.user);
-        
+
         // window.location.href = "/dashboard.html";
 
     } catch (err) {
